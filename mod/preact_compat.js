@@ -1,7 +1,3 @@
-// deno-fmt-ignore-file
-// deno-lint-ignore-file
-// This code was bundled using `deno bundle` and it's not recommended to edit it manually
-
 var w, d, j, b, $, z, H, q, N = {}, J = [], re = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i, W = Array.isArray;
 function k(e, t) {
     for(var _ in t)e[_] = t[_];
@@ -605,7 +601,7 @@ d.unmount = function(e) {
             }); g = r.t.pop();)g.forceUpdate();
         }
     }, _ = t.__h === !0;
-    r.__u++ || _ || r.setState({
+    (r.__u++) || _ || r.setState({
         __a: r.__b = r.__v.__k[0]
     }), e.then(a, a);
 }, d2.prototype.componentWillUnmount = function() {

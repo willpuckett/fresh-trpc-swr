@@ -21,26 +21,26 @@
     // None of the below have external deps.
     // Fresh Stuff
     "$fresh/": "https://deno.land/x/fresh@1.2.0/",
-    "twind": "https://bundle.deno.dev/https://esm.sh/twind@0.16.19",
+    "twind": "./mod/twind.js",
     "twind/": "https://esm.sh/twind@0.16.19/",
     // TRPC Stuff 
     "@trpc/client": "./mod/trpc_client.js",
     "@trpc/server": "./mod/trpc_server.js",
-    "@trpc/server/adapters/fetch": "https://bundle.deno.dev/https://esm.sh/@trpc/server@10.34.0/adapters/fetch",
-    "@trpc/server/shared": "https://bundle.deno.dev/https://esm.sh/@trpc/server@10.34.0/shared",
+    "@trpc/server/adapters/fetch": "./mod/trpc_server_adapters_fetch.js",
+    "@trpc/server/shared": "./mod/trpc_server_shared.js",
     "kvdex": "https://deno.land/x/kvdex@v0.3.2/mod.ts",
     "kv_oauth": "./mod/kv_oauth.js",
     "zod": "./mod/zod.js",
     // Preact Stuff
     // Make sure these versions are the same -->
     "preact": "https://esm.sh/preact@10.15.1?deps=preact@10.15.1&external=preact",
-    "preact/hooks": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/hooks?deps=preact@10.15.1&external=preact",
-    "preact/debug": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/debug?deps=preact@10.15.1&external=preact",
-    "preact/jsx-runtime": "https://esm.sh/preact@10.15.1/jsx-runtime?deps=preact@10.15.1&external=preact",
-    "preact/compat": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/compat?deps=preact@10.15.1&external=preact",
-    "preact/devtools": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/devtools?deps=preact@10.15.1&external=preact",
-    "react": "https://esm.sh/preact@10.15.1/compat?deps=preact@10.15.1&external=preact",
-    "react/jsx-runtime": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/jsx-runtime?deps=preact@10.15.1&external=preact",
+    "preact/hooks": "./mod/preact_hooks.js",
+    "preact/debug": "./mod/preact_debug.js",
+    "preact/jsx-runtime": "./mod/preact_jsx_runtime.js",
+    "preact/compat": "./mod/preact_compat.js",
+    "preact/devtools": "./mod/preact_devtools.js",
+    "react": "./mod/react.js",
+    "react/jsx-runtime": "./mod/react_jsx_runtime.js",
     // <--
     // "@preact/signals-core": "https://bundle.deno.dev/https://esm.sh/@preact/signals-core@1.2.3?deps=preact@10.15.1&external=preact",
     // This is where the external deps start. Everything below this line has external deps.
