@@ -1,6 +1,5 @@
 import { download } from "https://deno.land/x/download/mod.ts";
 
-
 const mods = {
     "twind": "https://bundle.deno.dev/https://esm.sh/twind@0.16.19",
     "@trpc/client": "https://bundle.deno.dev/https://esm.sh/@trpc/client@10.34.0",
@@ -10,7 +9,6 @@ const mods = {
     "@preact/signals-core": "https://bundle.deno.dev/https://esm.sh/@preact/signals-core@1.2.3",
     // "use-sync-external-store": "https://bundle.deno.dev/https://esm.sh/*use-sync-external-store@1.2.0",
 }
-
 
 for (const [file, url] of Object.entries(mods)) {
 

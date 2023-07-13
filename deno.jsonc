@@ -24,29 +24,35 @@
     "twind": "https://bundle.deno.dev/https://esm.sh/twind@0.16.19",
     "twind/": "https://esm.sh/twind@0.16.19/",
     // TRPC Stuff 
-    "@trpc/client": "./mod/trpc_client.ts",
-    "@trpc/server": "./mod/trpc_server.ts",
-    "@trpc/server/": "https://esm.sh/@trpc/server@10.34.0/",
+    "@trpc/client": "./mod/trpc_client.js",
+    "@trpc/server": "./mod/trpc_server.js",
+    "@trpc/server/adapters/fetch": "https://bundle.deno.dev/https://esm.sh/@trpc/server@10.34.0/adapters/fetch",
+    "@trpc/server/shared": "https://bundle.deno.dev/https://esm.sh/@trpc/server@10.34.0/shared",
     "kvdex": "https://deno.land/x/kvdex@v0.3.2/mod.ts",
-    "kv_oauth": "./mod/kv_oauth.ts",
-    "zod": "./mod/zod.ts",
+    "kv_oauth": "./mod/kv_oauth.js",
+    "zod": "./mod/zod.js",
     // Preact Stuff
     // Make sure these versions are the same -->
-    "preact": "https://esm.sh/preact@10.15.1",
-    "preact/": "https://esm.sh/preact@10.15.1/",
-    "react": "https://esm.sh/preact@10.15.1/compat",
-    "react/": "https://esm.sh/preact@10.15.1/compat/",
+    "preact": "https://esm.sh/preact@10.15.1?deps=preact@10.15.1&external=preact",
+    "preact/hooks": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/hooks?deps=preact@10.15.1&external=preact",
+    "preact/debug": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/debug?deps=preact@10.15.1&external=preact",
+    "preact/jsx-runtime": "https://esm.sh/preact@10.15.1/jsx-runtime?deps=preact@10.15.1&external=preact",
+    "preact/compat": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/compat?deps=preact@10.15.1&external=preact",
+    "preact/devtools": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/devtools?deps=preact@10.15.1&external=preact",
+    "react": "https://esm.sh/preact@10.15.1/compat?deps=preact@10.15.1&external=preact",
+    "react/jsx-runtime": "https://bundle.deno.dev/https://esm.sh/preact@10.15.1/jsx-runtime?deps=preact@10.15.1&external=preact",
     // <--
-    "@preact/signals-core": "./mod/preact_signals-core.ts",
+    // "@preact/signals-core": "https://bundle.deno.dev/https://esm.sh/@preact/signals-core@1.2.3?deps=preact@10.15.1&external=preact",
     // This is where the external deps start. Everything below this line has external deps.
     // ^-- no deps (no * necessary for esm imports) / deps --v
-    "@preact/signals": "https://esm.sh/*@preact/signals@1.1.3",
-    "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.2.0",
+    "@preact/signals": "https://esm.sh/@preact/signals@1.1.3?deps=preact@10.15.1&external=preact",
+    "preact-render-to-string": "https://esm.sh/preact-render-to-string@6.2.0?deps=preact@10.15.1&external=preact",
     "use-sync-external-store": "https://bundle.deno.dev/https://esm.sh/*use-sync-external-store@1.2.0",
     "use-sync-external-store/": "https://esm.sh/*use-sync-external-store@1.2.0/",
     // Frontend Stuff
     "swr": "https://esm.sh/*swr@2.2.0",
-    "swr/": "https://esm.sh/*swr@2.2.0/",
+    "swr/mutation": "https://esm.sh/*swr@2.2.0/mutation",
+    "swr/_internal": "https://esm.sh/*swr@2.2.0/_internal",
     "@trpc-swr/client": "https://esm.sh/*@trpc-swr/client@1.0.2"
   },
   "scopes": {}

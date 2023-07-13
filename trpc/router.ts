@@ -1,6 +1,5 @@
 import { initTRPC } from '@trpc/server'
-import { db } from './kvdex.ts'
-import { Post } from './kvdex.ts'
+import { db, Post } from './kvdex.ts'
 import { z } from 'zod'
 import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch'
 
