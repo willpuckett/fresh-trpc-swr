@@ -12,7 +12,9 @@ export default function clientSide() {
         class='border-1'
         value={text}
         onBlur={(e) => text.value = e.currentTarget && e.currentTarget.value}
+        name='post'
       />
+      <label for='post'>Post Title : </label>
       <button
         class='border-1'
         onClick={() => {
