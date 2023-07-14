@@ -1,6 +1,6 @@
 import type { Handlers } from '$fresh/server.ts'
 import { signIn } from 'kv_oauth'
-import { oauth2Client } from './oauth.ts'
+import { oauth2Client } from '../../trpc/router.ts'
 
 export const handler: Handlers = {
   async GET(req) {
