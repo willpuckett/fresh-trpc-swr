@@ -1,7 +1,10 @@
 import { initTRPC } from '@trpc/server'
 import { db, Post } from './kvdex.ts'
 import { z } from 'zod'
+import { createGitHubOAuth2Client } from 'kv_oauth'
 import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch'
+
+export const oauth2Client = createGitHubOAuth2Client()
 
 export const createContext = ({
   req,

@@ -1,6 +1,6 @@
 import type { Handlers, PageProps } from '$fresh/server.ts'
 import { getSessionAccessToken, getSessionId } from 'kv_oauth'
-import { oauth2Client } from './api/oauth.ts'
+import { oauth2Client } from '../trpc/router.ts'
 
 interface Data {
   isSignedIn: boolean

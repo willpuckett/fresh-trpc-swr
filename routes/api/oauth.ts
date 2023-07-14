@@ -1,8 +1,7 @@
 import type { Handlers } from '$fresh/server.ts'
 import { handleCallback } from 'kv_oauth'
-import { createGitHubOAuth2Client } from 'kv_oauth'
+import {oauth2Client} from '../../trpc/router.ts'
 
-export const oauth2Client = createGitHubOAuth2Client()
 
 export const handler: Handlers = {
   async GET(req) {
