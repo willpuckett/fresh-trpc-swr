@@ -19,7 +19,8 @@
     // The * marks all deps as external in an esm import.
     // None of the below have external deps.
     // Fresh Stuff
-    "$fresh/": "https://deno.land/x/fresh@1.2.0/",
+    // "$fresh/": "https://deno.land/x/fresh@1.2.0/",
+    "$fresh/": "./fresh/",
     "twind": "https://esm.sh/twind@0.16.19",
     "twind/": "https://esm.sh/twind@0.16.19/",
     // TRPC Stuff
