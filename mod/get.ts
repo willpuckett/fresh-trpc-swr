@@ -32,3 +32,6 @@ for (const [file, url] of Object.entries(mods)) {
       console.log(err);
     }
 }
+
+
+// deno bundle https://deno.land/x/fresh@1.2.0/src/server/deps.ts mod/fresh_src_server_deps.js

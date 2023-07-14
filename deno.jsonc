@@ -21,6 +21,7 @@
     // None of the below have external deps.
     // Fresh Stuff
     "$fresh/": "https://deno.land/x/fresh@1.2.0/",
+    "https://deno.land/x/fresh@1.2.0/src/server/deps.ts": "./mod/fresh_src_server_deps.js",
     "twind": "./mod/twind.js",
     "twind/": "https://esm.sh/twind@0.16.19/",
     // TRPC Stuff 
