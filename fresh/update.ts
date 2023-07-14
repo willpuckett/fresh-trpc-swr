@@ -7,12 +7,12 @@ import {
   Project,
   resolve,
   walk,
-} from "./src/dev/deps.ts";
-import { error } from "./src/dev/error.ts";
-import { freshImports, twindImports } from "./src/dev/imports.ts";
-import { collect, ensureMinDenoVersion, generate } from "./src/dev/mod.ts";
+} from './src/dev/deps.ts'
+import { error } from './src/dev/error.ts'
+import { freshImports, twindImports } from './src/dev/imports.ts'
+import { collect, ensureMinDenoVersion, generate } from './src/dev/mod.ts'
 
-ensureMinDenoVersion();
+ensureMinDenoVersion()
 
 const help = `fresh-update
 
@@ -24,106 +24,106 @@ To upgrade a project in the current directory, run:
 
 USAGE:
     fresh-update <DIRECTORY>
-`;
+`
 
-const flags = parse(Deno.args, {});
+const flags = parse(Deno.args, {})
 
 if (flags._.length !== 1) {
-  error(help);
+  error(help)
 }
 
-const unresolvedDirectory = Deno.args[0];
-const resolvedDirectory = resolve(unresolvedDirectory);
-const srcDirectory = await findSrcDirectory("main.ts", resolvedDirectory);
+const unresolvedDirectory = Deno.args[0]
+const resolvedDirectory = resolve(unresolvedDirectory)
+const srcDirectory = await findSrcDirectory('main.ts', resolvedDirectory)
 
 // Update dependencies in the import map. The import map can either be embedded
 // in a deno.json (or .jsonc) file or be in a separate JSON file referenced with the
 // `importMap` key in deno.json.
-const fileNames = ["deno.json", "deno.jsonc"];
+const fileNames = ['deno.json', 'deno.jsonc']
 const DENO_JSON_PATH = fileNames
   .map((fileName) => join(resolvedDirectory, fileName))
-  .find((path) => existsSync(path));
+  .find((path) => existsSync(path))
 if (!DENO_JSON_PATH) {
   throw new Error(
     `Neither deno.json nor deno.jsonc could be found in ${resolvedDirectory}`,
-  );
+  )
 }
-let denoJsonText = await Deno.readTextFile(DENO_JSON_PATH);
-let denoJson = JSON.parse(denoJsonText);
+let denoJsonText = await Deno.readTextFile(DENO_JSON_PATH)
+let denoJson = JSON.parse(denoJsonText)
 if (denoJson.importMap) {
-  const IMPORT_MAP_PATH = join(resolvedDirectory, denoJson.importMap);
-  const importMapText = await Deno.readTextFile(IMPORT_MAP_PATH);
-  const importMap = JSON.parse(importMapText);
-  denoJson.imports = importMap.imports;
-  denoJson.scopes = importMap.scopes;
-  delete denoJson.importMap;
-  await Deno.remove(IMPORT_MAP_PATH);
+  const IMPORT_MAP_PATH = join(resolvedDirectory, denoJson.importMap)
+  const importMapText = await Deno.readTextFile(IMPORT_MAP_PATH)
+  const importMap = JSON.parse(importMapText)
+  denoJson.imports = importMap.imports
+  denoJson.scopes = importMap.scopes
+  delete denoJson.importMap
+  await Deno.remove(IMPORT_MAP_PATH)
 }
 
 // Add fresh lint preset
 if (!denoJson.lint) {
-  denoJson.lint = {};
+  denoJson.lint = {}
 }
 if (!denoJson.lint.rules) {
-  denoJson.lint.rules = {};
+  denoJson.lint.rules = {}
 }
 if (!denoJson.lint.rules.tags) {
-  denoJson.lint.rules.tags = [];
+  denoJson.lint.rules.tags = []
 }
-if (!denoJson.lint.rules.tags.includes("fresh")) {
-  denoJson.lint.rules.tags.push("fresh");
+if (!denoJson.lint.rules.tags.includes('fresh')) {
+  denoJson.lint.rules.tags.push('fresh')
 }
-if (!denoJson.lint.rules.tags.includes("recommended")) {
-  denoJson.lint.rules.tags.push("recommended");
+if (!denoJson.lint.rules.tags.includes('recommended')) {
+  denoJson.lint.rules.tags.push('recommended')
 }
 
-freshImports(denoJson.imports);
-if (denoJson.imports["twind"]) {
-  twindImports(denoJson.imports);
+freshImports(denoJson.imports)
+if (denoJson.imports['twind']) {
+  twindImports(denoJson.imports)
 }
-denoJsonText = JSON.stringify(denoJson, null, 2);
-await Deno.writeTextFile(DENO_JSON_PATH, denoJsonText);
+denoJsonText = JSON.stringify(denoJson, null, 2)
+await Deno.writeTextFile(DENO_JSON_PATH, denoJsonText)
 
 // Code mod for classic JSX -> automatic JSX.
 const JSX_CODEMOD =
   `This project is using the classic JSX transform. Would you like to update to the
 automatic JSX transform? This will remove the /** @jsx h */ pragma from your
-source code and add the jsx: "react-jsx" compiler option to your deno.json file.`;
-if (denoJson.compilerOptions?.jsx !== "react-jsx" && confirm(JSX_CODEMOD)) {
-  console.log("Updating config file...");
-  denoJson.compilerOptions = denoJson.compilerOptions || {};
-  denoJson.compilerOptions.jsx = "react-jsx";
-  denoJson.compilerOptions.jsxImportSource = "preact";
-  denoJsonText = JSON.stringify(denoJson, null, 2);
-  await Deno.writeTextFile(DENO_JSON_PATH, denoJsonText);
+source code and add the jsx: "react-jsx" compiler option to your deno.json file.`
+if (denoJson.compilerOptions?.jsx !== 'react-jsx' && confirm(JSX_CODEMOD)) {
+  console.log('Updating config file...')
+  denoJson.compilerOptions = denoJson.compilerOptions || {}
+  denoJson.compilerOptions.jsx = 'react-jsx'
+  denoJson.compilerOptions.jsxImportSource = 'preact'
+  denoJsonText = JSON.stringify(denoJson, null, 2)
+  await Deno.writeTextFile(DENO_JSON_PATH, denoJsonText)
 
-  const project = new Project();
+  const project = new Project()
   const sfs = project.addSourceFilesAtPaths(
-    join(resolvedDirectory, "**", "*.{js,jsx,ts,tsx}"),
-  );
+    join(resolvedDirectory, '**', '*.{js,jsx,ts,tsx}'),
+  )
 
   for (const sf of sfs) {
     for (const d of sf.getImportDeclarations()) {
-      if (d.getModuleSpecifierValue() !== "preact") continue;
+      if (d.getModuleSpecifierValue() !== 'preact') continue
       for (const n of d.getNamedImports()) {
-        const name = n.getName();
-        if (name === "h" || name === "Fragment") n.remove();
+        const name = n.getName()
+        if (name === 'h' || name === 'Fragment') n.remove()
       }
       if (
         d.getNamedImports().length === 0 &&
         d.getNamespaceImport() === undefined &&
         d.getDefaultImport() === undefined
       ) {
-        d.remove();
+        d.remove()
       }
     }
 
-    let text = sf.getFullText();
-    text = text.replaceAll("/** @jsx h */\n", "");
-    text = text.replaceAll("/** @jsxFrag Fragment */\n", "");
-    sf.replaceWithText(text);
+    let text = sf.getFullText()
+    text = text.replaceAll('/** @jsx h */\n', '')
+    text = text.replaceAll('/** @jsxFrag Fragment */\n', '')
+    sf.replaceWithText(text)
 
-    await sf.save();
+    await sf.save()
   }
 }
 
@@ -131,13 +131,13 @@ if (denoJson.compilerOptions?.jsx !== "react-jsx" && confirm(JSX_CODEMOD)) {
 const TWIND_CODEMOD =
   `This project is using an old version of the twind integration. Would you like to
 update to the new twind plugin? This will remove the 'class={tw\`border\`}'
-boilerplate from your source code replace it with the simpler 'class="border"'.`;
-if (denoJson.imports["@twind"] && confirm(TWIND_CODEMOD)) {
-  await Deno.remove(join(resolvedDirectory, denoJson.imports["@twind"]));
+boilerplate from your source code replace it with the simpler 'class="border"'.`
+if (denoJson.imports['@twind'] && confirm(TWIND_CODEMOD)) {
+  await Deno.remove(join(resolvedDirectory, denoJson.imports['@twind']))
 
-  delete denoJson.imports["@twind"];
-  denoJson = JSON.stringify(denoJson, null, 2);
-  await Deno.writeTextFile(DENO_JSON_PATH, denoJson);
+  delete denoJson.imports['@twind']
+  denoJson = JSON.stringify(denoJson, null, 2)
+  await Deno.writeTextFile(DENO_JSON_PATH, denoJson)
 
   const MAIN_TS = `/// <reference no-default-lib="true" />
 /// <reference lib="dom" />
@@ -151,77 +151,77 @@ import manifest from "./fresh.gen.ts";
 import twindPlugin from "$fresh/plugins/twind.ts";
 import twindConfig from "./twind.config.ts";
 
-await start(manifest, { plugins: [twindPlugin(twindConfig)] });\n`;
-  const MAIN_TS_PATH = join(resolvedDirectory, "main.ts");
-  await Deno.writeTextFile(MAIN_TS_PATH, MAIN_TS);
+await start(manifest, { plugins: [twindPlugin(twindConfig)] });\n`
+  const MAIN_TS_PATH = join(resolvedDirectory, 'main.ts')
+  await Deno.writeTextFile(MAIN_TS_PATH, MAIN_TS)
 
   const TWIND_CONFIG_TS = `import { Options } from "$fresh/plugins/twind.ts";
 
   export default {
     selfURL: import.meta.url,
   } as Options;
-  `;
+  `
   await Deno.writeTextFile(
-    join(resolvedDirectory, "twind.config.ts"),
+    join(resolvedDirectory, 'twind.config.ts'),
     TWIND_CONFIG_TS,
-  );
+  )
 
-  const project = new Project();
+  const project = new Project()
   const sfs = project.addSourceFilesAtPaths(
-    join(resolvedDirectory, "**", "*.{js,jsx,ts,tsx}"),
-  );
+    join(resolvedDirectory, '**', '*.{js,jsx,ts,tsx}'),
+  )
 
   for (const sf of sfs) {
-    const nodes = sf.forEachDescendantAsArray();
+    const nodes = sf.forEachDescendantAsArray()
     for (const n of nodes) {
       if (!n.wasForgotten() && Node.isJsxAttribute(n)) {
-        const init = n.getInitializer();
-        const name = n.getName();
+        const init = n.getInitializer()
+        const name = n.getName()
         if (
           Node.isJsxExpression(init) &&
-          (name === "class" || name === "className")
+          (name === 'class' || name === 'className')
         ) {
-          const expr = init.getExpression();
+          const expr = init.getExpression()
           if (Node.isTaggedTemplateExpression(expr)) {
-            const tag = expr.getTag();
-            if (Node.isIdentifier(tag) && tag.getText() === "tw") {
-              const template = expr.getTemplate();
+            const tag = expr.getTag()
+            if (Node.isIdentifier(tag) && tag.getText() === 'tw') {
+              const template = expr.getTemplate()
               if (Node.isNoSubstitutionTemplateLiteral(template)) {
-                n.setInitializer(`"${template.getLiteralValue()}"`);
+                n.setInitializer(`"${template.getLiteralValue()}"`)
               }
             }
           } else if (expr?.getFullText() === `tw(props.class ?? "")`) {
-            n.setInitializer(`{props.class}`);
+            n.setInitializer(`{props.class}`)
           }
         }
       }
     }
 
-    const text = sf.getFullText();
-    const removeTw = [...text.matchAll(/tw[,\s`(]/g)].length === 1;
+    const text = sf.getFullText()
+    const removeTw = [...text.matchAll(/tw[,\s`(]/g)].length === 1
 
     for (const d of sf.getImportDeclarations()) {
-      if (d.getModuleSpecifierValue() !== "@twind") continue;
+      if (d.getModuleSpecifierValue() !== '@twind') continue
       for (const n of d.getNamedImports()) {
-        const name = n.getName();
-        if (name === "tw" && removeTw) n.remove();
+        const name = n.getName()
+        if (name === 'tw' && removeTw) n.remove()
       }
-      d.setModuleSpecifier("twind");
+      d.setModuleSpecifier('twind')
       if (
         d.getNamedImports().length === 0 &&
         d.getNamespaceImport() === undefined &&
         d.getDefaultImport() === undefined
       ) {
-        d.remove();
+        d.remove()
       }
     }
 
-    await sf.save();
+    await sf.save()
   }
 }
 
-const manifest = await collect(srcDirectory);
-await generate(srcDirectory, manifest);
+const manifest = await collect(srcDirectory)
+await generate(srcDirectory, manifest)
 
 async function findSrcDirectory(
   fileName: string,
@@ -229,8 +229,8 @@ async function findSrcDirectory(
 ): Promise<string> {
   for await (const entry of walk(directory)) {
     if (entry.isFile && entry.name === fileName) {
-      return dirname(entry.path);
+      return dirname(entry.path)
     }
   }
-  return resolvedDirectory;
+  return resolvedDirectory
 }

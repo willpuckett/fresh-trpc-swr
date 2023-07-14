@@ -1,2 +1,2 @@
-import "preact/debug";
-export * from "./main.ts";
+import 'preact/debug'
+export * from './main.ts'

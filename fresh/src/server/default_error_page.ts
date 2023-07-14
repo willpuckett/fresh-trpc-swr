@@ -1,58 +1,58 @@
-import { h } from "preact";
-import { DEBUG } from "./constants.ts";
-import type { ErrorPageProps } from "./types.ts";
+import { h } from 'preact'
+import { DEBUG } from './constants.ts'
+import type { ErrorPageProps } from './types.ts'
 
 export default function DefaultErrorPage(props: ErrorPageProps) {
-  const { error } = props;
+  const { error } = props
 
-  let message = undefined;
+  let message = undefined
   if (DEBUG) {
     if (error instanceof Error) {
-      message = error.stack;
+      message = error.stack
     } else {
-      message = String(error);
+      message = String(error)
     }
   }
 
   return h(
-    "div",
+    'div',
     {
-      class: "frsh-error-page",
+      class: 'frsh-error-page',
       style: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       },
     },
     h(
-      "div",
+      'div',
       {
         style: {
-          border: "#f3f4f6 2px solid",
-          borderTop: "red 4px solid",
-          background: "#f9fafb",
+          border: '#f3f4f6 2px solid',
+          borderTop: 'red 4px solid',
+          background: '#f9fafb',
           margin: 16,
-          minWidth: "300px",
+          minWidth: '300px',
         },
       },
-      h("p", {
+      h('p', {
         style: {
           margin: 0,
-          fontSize: "12pt",
+          fontSize: '12pt',
           padding: 16,
-          fontFamily: "sans-serif",
+          fontFamily: 'sans-serif',
         },
-      }, "An error occurred during route handling or page rendering."),
-      message && h("pre", {
+      }, 'An error occurred during route handling or page rendering.'),
+      message && h('pre', {
         style: {
           margin: 0,
-          fontSize: "12pt",
-          overflowY: "auto",
+          fontSize: '12pt',
+          overflowY: 'auto',
           padding: 16,
           paddingTop: 0,
-          fontFamily: "monospace",
+          fontFamily: 'monospace',
         },
       }, message),
     ),
-  );
+  )
 }

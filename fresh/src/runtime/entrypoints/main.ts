@@ -6,15 +6,15 @@ import {
   options,
   render,
   VNode,
-} from "preact";
-import { assetHashingHook } from "../utils.ts";
+} from 'preact'
+import { assetHashingHook } from '../utils.ts'
 
 function createRootFragment(
   parent: Element,
   replaceNode: Node | Node[],
   endMarker: Text,
 ) {
-  replaceNode = ([] as Node[]).concat(replaceNode);
+  replaceNode = ([] as Node[]).concat(replaceNode)
   // @ts-ignore this is fine
   return parent.__k = {
     nodeType: 1,
@@ -22,29 +22,29 @@ function createRootFragment(
     firstChild: replaceNode[0],
     childNodes: replaceNode,
     insertBefore(node: Node, child: Node) {
-      parent.insertBefore(node, child);
+      parent.insertBefore(node, child)
     },
     appendChild(child: Node) {
       // We cannot blindly call `.append()` as that would add
       // the new child to the very end of the parent node. This
       // leads to ordering issues when the multiple islands
       // share the same parent node.
-      parent.insertBefore(child, endMarker);
+      parent.insertBefore(child, endMarker)
     },
     removeChild(child: Node) {
-      parent.removeChild(child);
+      parent.removeChild(child)
     },
-  };
+  }
 }
 
 function isCommentNode(node: Node): node is Comment {
-  return node.nodeType === Node.COMMENT_NODE;
+  return node.nodeType === Node.COMMENT_NODE
 }
 function isTextNode(node: Node): node is Text {
-  return node.nodeType === Node.TEXT_NODE;
+  return node.nodeType === Node.TEXT_NODE
 }
 function isElementNode(node: Node): node is HTMLElement {
-  return node.nodeType === Node.ELEMENT_NODE;
+  return node.nodeType === Node.ELEMENT_NODE
 }
 
 export function revive(
@@ -61,25 +61,25 @@ export function revive(
     // later during iteration
     [h(Fragment, null)],
     document.body,
-  );
+  )
 }
 
 function ServerComponent(
   props: { children: ComponentChildren },
 ): ComponentChildren {
-  return props.children;
+  return props.children
 }
-ServerComponent.displayName = "PreactServerComponent";
+ServerComponent.displayName = 'PreactServerComponent'
 
 function addPropsChild(parent: VNode, vnode: ComponentChildren) {
-  const props = parent.props;
+  const props = parent.props
   if (props.children === null) {
-    props.children = vnode;
+    props.children = vnode
   } else {
     if (!Array.isArray(props.children)) {
-      props.children = [props.children, vnode];
+      props.children = [props.children, vnode]
     } else {
-      props.children.push(vnode);
+      props.children.push(vnode)
     }
   }
 }
@@ -90,15 +90,15 @@ const enum MarkerKind {
 }
 
 interface Marker {
-  kind: MarkerKind;
+  kind: MarkerKind
   // We can remove this once we drop support for RTS <6.1.0 where
   // we rendered incorrect comments leading to `!--` and `--` being
   // included in the comment text. Therefore this is a normalized
   // string representing the actual intended comment value which makes
   // a bunch of stuff easier.
-  text: string;
-  startNode: Comment;
-  endNode: Comment | null;
+  text: string
+  startNode: Comment
+  endNode: Comment | null
 }
 
 /**
@@ -137,20 +137,20 @@ function _walkInner(
   vnodeStack: VNode[],
   node: Node | Comment,
 ) {
-  let sib: Node | null = node;
+  let sib: Node | null = node
   while (sib !== null) {
     const marker = markerStack.length > 0
       ? markerStack[markerStack.length - 1]
-      : null;
+      : null
 
     // We use comment nodes to mark fresh islands and slots
     if (isCommentNode(sib)) {
-      let comment = sib.data;
-      if (comment.startsWith("!--")) {
-        comment = comment.slice(3, -2);
+      let comment = sib.data
+      if (comment.startsWith('!--')) {
+        comment = comment.slice(3, -2)
       }
 
-      if (comment.startsWith("frsh-slot")) {
+      if (comment.startsWith('frsh-slot')) {
         // Note: Nested slots are not possible as they're flattened
         // already on the server.
         markerStack.push({
@@ -158,69 +158,69 @@ function _walkInner(
           text: comment,
           endNode: null,
           kind: MarkerKind.Slot,
-        });
+        })
         // @ts-ignore TS gets confused
-        vnodeStack.push(h(ServerComponent, { key: comment }));
+        vnodeStack.push(h(ServerComponent, { key: comment }))
       } else if (
         marker !== null && (
-          comment.startsWith("/frsh") ||
+          comment.startsWith('/frsh') ||
           // Check for old Preact RTS
           marker.text === comment
         )
       ) {
         // We're closing either a slot or an island
-        marker.endNode = sib;
+        marker.endNode = sib
 
-        markerStack.pop();
+        markerStack.pop()
         const parent = markerStack.length > 0
           ? markerStack[markerStack.length - 1]
-          : null;
+          : null
 
         if (marker.kind === MarkerKind.Slot) {
           // If we're closing a slot than it's assumed that we're
           // inside an island
           if (parent?.kind === MarkerKind.Island) {
-            const vnode = vnodeStack.pop();
+            const vnode = vnodeStack.pop()
 
             // For now only `props.children` is supported.
-            const islandParent = vnodeStack[vnodeStack.length - 1]!;
+            const islandParent = vnodeStack[vnodeStack.length - 1]!
             // Overwrite serialized `{__slot: "children"}` with the
             // actual vnode child.
-            islandParent.props.children = vnode;
+            islandParent.props.children = vnode
           }
 
           // Remove markers
-          marker.startNode.remove();
-          sib = sib.nextSibling;
-          marker.endNode.remove();
-          continue;
+          marker.startNode.remove()
+          sib = sib.nextSibling
+          marker.endNode.remove()
+          continue
         } else if (marker.kind === MarkerKind.Island) {
           // We're ready to revive this island if it has
           // no roots of its own. Otherwise we'll treat it
           // as a standard component
           if (markerStack.length === 0) {
-            const children: Node[] = [];
+            const children: Node[] = []
 
-            let child: Node | null = marker.startNode;
+            let child: Node | null = marker.startNode
             while (
               (child = child.nextSibling) !== null && child !== marker.endNode
             ) {
-              children.push(child);
+              children.push(child)
             }
 
-            const vnode = vnodeStack.pop();
+            const vnode = vnodeStack.pop()
 
-            const parentNode = sib.parentNode! as HTMLElement;
+            const parentNode = sib.parentNode! as HTMLElement
 
             // We need an end marker for islands because multiple
             // islands can share the same parent node. Since
             // islands are root-level render calls any calls to
             // `.appendChild` would lead to a wrong result.
-            const endMarker = new Text("");
+            const endMarker = new Text('')
             parentNode.insertBefore(
               endMarker,
               marker.endNode,
-            );
+            )
 
             const _render = () =>
               render(
@@ -231,52 +231,52 @@ function _walkInner(
                   endMarker,
                   // deno-lint-ignore no-explicit-any
                 ) as any as HTMLElement,
-              );
+              )
 
-            "scheduler" in window
+            'scheduler' in window
               // `scheduler.postTask` is async but that can easily
               // fire in the background. We don't want waiting for
               // the hydration of an island block us.
               // @ts-ignore scheduler API is not in types yet
               ? scheduler!.postTask(_render)
-              : setTimeout(_render, 0);
+              : setTimeout(_render, 0)
 
             // Remove markers
-            marker.startNode.remove();
-            sib = sib.nextSibling;
-            marker.endNode.remove();
-            continue;
+            marker.startNode.remove()
+            sib = sib.nextSibling
+            marker.endNode.remove()
+            continue
           } else if (parent?.kind === MarkerKind.Slot) {
             // Treat the island as a standard component when it
             // has an island parent or a slot parent
-            const vnode = vnodeStack.pop();
-            const parent = vnodeStack[vnodeStack.length - 1]!;
-            addPropsChild(parent, vnode);
+            const vnode = vnodeStack.pop()
+            const parent = vnodeStack[vnodeStack.length - 1]!
+            addPropsChild(parent, vnode)
           }
         }
-      } else if (comment.startsWith("frsh")) {
+      } else if (comment.startsWith('frsh')) {
         // We're opening a new island
-        const [id, exportName, n] = comment.slice(5).split(":");
-        const islandProps = props[Number(n)];
+        const [id, exportName, n] = comment.slice(5).split(':')
+        const islandProps = props[Number(n)]
 
         markerStack.push({
           startNode: sib,
           endNode: null,
           text: comment,
           kind: MarkerKind.Island,
-        });
-        const vnode = h(islands[id][exportName], islandProps);
-        vnodeStack.push(vnode);
+        })
+        const vnode = h(islands[id][exportName], islandProps)
+        vnodeStack.push(vnode)
       }
     } else if (isTextNode(sib)) {
-      const parentVNode = vnodeStack[vnodeStack.length - 1]!;
+      const parentVNode = vnodeStack[vnodeStack.length - 1]!
       if (
         marker !== null && marker.kind === MarkerKind.Slot
       ) {
-        addPropsChild(parentVNode, sib.data);
+        addPropsChild(parentVNode, sib.data)
       }
     } else {
-      const parentVNode = vnodeStack[vnodeStack.length - 1];
+      const parentVNode = vnodeStack[vnodeStack.length - 1]
       if (
         marker !== null &&
         marker.kind === MarkerKind.Slot && isElementNode(sib)
@@ -285,37 +285,37 @@ function _walkInner(
         // attach to the virtual-dom tree. In the future, once
         // Preact supports a way to skip over subtrees, this
         // can be dropped.
-        const childLen = sib.childNodes.length;
+        const childLen = sib.childNodes.length
         const props: Record<string, unknown> = {
           children: childLen <= 1 ? null : [],
-        };
-        for (let i = 0; i < sib.attributes.length; i++) {
-          const attr = sib.attributes[i];
-          props[attr.nodeName] = attr.nodeValue;
         }
-        const vnode = h(sib.localName, props);
-        addPropsChild(parentVNode, vnode);
-        vnodeStack.push(vnode);
+        for (let i = 0; i < sib.attributes.length; i++) {
+          const attr = sib.attributes[i]
+          props[attr.nodeName] = attr.nodeValue
+        }
+        const vnode = h(sib.localName, props)
+        addPropsChild(parentVNode, vnode)
+        vnodeStack.push(vnode)
       }
 
       // TODO: What about script tags?
       if (
-        sib.firstChild && (sib.nodeName !== "SCRIPT")
+        sib.firstChild && (sib.nodeName !== 'SCRIPT')
       ) {
-        _walkInner(islands, props, markerStack, vnodeStack, sib.firstChild);
+        _walkInner(islands, props, markerStack, vnodeStack, sib.firstChild)
       }
 
       if (marker !== null && marker.kind === MarkerKind.Slot) {
-        vnodeStack.pop();
+        vnodeStack.pop()
       }
     }
 
-    sib = sib.nextSibling;
+    sib = sib.nextSibling
   }
 }
 
-const originalHook = options.vnode;
+const originalHook = options.vnode
 options.vnode = (vnode) => {
-  assetHashingHook(vnode);
-  if (originalHook) originalHook(vnode);
-};
+  assetHashingHook(vnode)
+  if (originalHook) originalHook(vnode)
+}

@@ -8,7 +8,7 @@ export default function clientSide() {
   const deletePost = trpc.post.delete.useSWRMutation().trigger
   return (
     <div>
-      <label for='post'>Post Title : </label>
+      <label for='post'>Post Title :</label>
       <input
         class='border-1'
         value={text}

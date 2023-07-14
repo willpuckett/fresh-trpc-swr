@@ -1,4 +1,4 @@
-import { renderToString } from "preact-render-to-string";
+import { renderToString } from 'preact-render-to-string'
 import {
   Component,
   ComponentChildren,
@@ -8,7 +8,7 @@ import {
   Options as PreactOptions,
   options as preactOptions,
   VNode,
-} from "preact";
+} from 'preact'
 import {
   AppModule,
   AsyncRoute,
@@ -21,72 +21,72 @@ import {
   RenderFunction,
   Route,
   UnknownPage,
-} from "./types.ts";
-import { HEAD_CONTEXT } from "../runtime/head.ts";
-import { CSP_CONTEXT, nonce, NONE, UNSAFE_INLINE } from "../runtime/csp.ts";
-import { ContentSecurityPolicy } from "../runtime/csp.ts";
-import { bundleAssetUrl } from "./constants.ts";
-import { assetHashingHook } from "../runtime/utils.ts";
-import { htmlEscapeJsonString } from "./htmlescape.ts";
-import { serialize } from "./serializer.ts";
+} from './types.ts'
+import { HEAD_CONTEXT } from '../runtime/head.ts'
+import { CSP_CONTEXT, nonce, NONE, UNSAFE_INLINE } from '../runtime/csp.ts'
+import { ContentSecurityPolicy } from '../runtime/csp.ts'
+import { bundleAssetUrl } from './constants.ts'
+import { assetHashingHook } from '../runtime/utils.ts'
+import { htmlEscapeJsonString } from './htmlescape.ts'
+import { serialize } from './serializer.ts'
 
 export const DEFAULT_RENDER_FN: RenderFunction = (_ctx, render) => {
-  render();
-};
+  render()
+}
 
 // These hooks are long stable, but when we originally added them we
 // weren't sure if they should be public.
 export interface AdvancedPreactOptions extends PreactOptions {
   /** Attach a hook that is invoked after a tree was mounted or was updated. */
-  __c?(vnode: VNode, commitQueue: Component[]): void;
+  __c?(vnode: VNode, commitQueue: Component[]): void
   /** Attach a hook that is invoked before a vnode has rendered. */
-  __r?(vnode: VNode): void;
-  errorBoundaries?: boolean;
+  __r?(vnode: VNode): void
+  errorBoundaries?: boolean
 }
-const options = preactOptions as AdvancedPreactOptions;
+const options = preactOptions as AdvancedPreactOptions
 
 // Enable error boundaries in Preact.
-options.errorBoundaries = true;
+options.errorBoundaries = true
 
 export interface RenderOptions<Data> {
-  request: Request;
+  request: Request
   // deno-lint-ignore no-explicit-any
-  context: any;
-  route: Route<Data> | UnknownPage | ErrorPage;
-  islands: Island[];
-  plugins: Plugin[];
-  app: AppModule;
-  imports: string[];
-  dependenciesFn: (path: string) => string[];
-  url: URL;
-  params: Record<string, string | string[]>;
-  renderFn: RenderFunction;
-  data?: Data;
-  state?: Record<string, unknown>;
-  error?: unknown;
-  lang?: string;
+  context: any
+  route: Route<Data> | UnknownPage | ErrorPage
+  islands: Island[]
+  plugins: Plugin[]
+  app: AppModule
+  imports: string[]
+  dependenciesFn: (path: string) => string[]
+  url: URL
+  params: Record<string, string | string[]>
+  renderFn: RenderFunction
+  data?: Data
+  state?: Record<string, unknown>
+  error?: unknown
+  lang?: string
 }
 
-export type InnerRenderFunction = () => string;
+export type InnerRenderFunction = () => string
 
 export class RenderContext {
-  #id: string;
-  #state: Map<string, unknown> = new Map();
-  #styles: string[] = [];
-  #url: URL;
-  #route: string;
-  #lang: string;
+  #id: string
+  #state: Map<string, unknown> = new Map()
+  #styles: string[] = []
+  #url: URL
+  #route: string
+  #lang: string
 
   constructor(id: string, url: URL, route: string, lang: string) {
-    this.#id = id;
-    this.#url = url;
-    this.#route = route;
-    this.#lang = lang;
+    this.#id = id
+    this.#url = url
+    this.#route = route
+    this.#lang = lang
   }
 
   /** A unique ID for this logical JIT render. */
   get id(): string {
-    return this.#id;
+    return this.#id
   }
 
   /**
@@ -95,7 +95,7 @@ export class RenderContext {
    * preact render passes due to suspense.
    */
   get state(): Map<string, unknown> {
-    return this.#state;
+    return this.#state
   }
 
   /**
@@ -105,26 +105,26 @@ export class RenderContext {
    * order specified here.
    */
   get styles(): string[] {
-    return this.#styles;
+    return this.#styles
   }
 
   /** The URL of the page being rendered. */
   get url(): URL {
-    return this.#url;
+    return this.#url
   }
 
   /** The route matcher (e.g. /blog/:id) that the request matched for this page
    * to be rendered. */
   get route(): string {
-    return this.#route;
+    return this.#route
   }
 
   /** The language of the page being rendered. Defaults to "en". */
   get lang(): string {
-    return this.#lang;
+    return this.#lang
   }
   set lang(lang: string) {
-    this.#lang = lang;
+    this.#lang = lang
   }
 }
 
@@ -132,7 +132,7 @@ function defaultCsp() {
   return {
     directives: { defaultSrc: [NONE], styleSrc: [UNSAFE_INLINE] },
     reportOnly: false,
-  };
+  }
 }
 
 /**
@@ -142,9 +142,9 @@ function defaultCsp() {
 export async function render<Data>(
   opts: RenderOptions<Data>,
 ): Promise<[string, ContentSecurityPolicy | undefined] | Response> {
-  const component = opts.route.component;
-  const isAsyncComponent = typeof component === "function" &&
-    component.constructor.name === "AsyncFunction";
+  const component = opts.route.component
+  const isAsyncComponent = typeof component === 'function' &&
+    component.constructor.name === 'AsyncFunction'
 
   const props: Record<string, unknown> = {
     params: opts.params,
@@ -152,41 +152,41 @@ export async function render<Data>(
     route: opts.route.pattern,
     data: opts.data,
     state: opts.state,
-  };
+  }
   if (opts.error) {
-    props.error = opts.error;
+    props.error = opts.error
   }
 
   const csp: ContentSecurityPolicy | undefined = opts.route.csp
     ? defaultCsp()
-    : undefined;
-  const headComponents: ComponentChildren[] = [];
+    : undefined
+  const headComponents: ComponentChildren[] = []
   if (csp) {
     // Clear the csp
-    const newCsp = defaultCsp();
-    csp.directives = newCsp.directives;
-    csp.reportOnly = newCsp.reportOnly;
+    const newCsp = defaultCsp()
+    csp.directives = newCsp.directives
+    csp.reportOnly = newCsp.reportOnly
   }
   // Clear the head components
-  headComponents.splice(0, headComponents.length);
+  headComponents.splice(0, headComponents.length)
 
   // Setup the interesting VNode types
-  ISLANDS.splice(0, ISLANDS.length, ...opts.islands);
+  ISLANDS.splice(0, ISLANDS.length, ...opts.islands)
 
   // Clear the encountered vnodes
-  ENCOUNTERED_ISLANDS.clear();
+  ENCOUNTERED_ISLANDS.clear()
 
   // Clear the island props
-  ISLAND_PROPS = [];
+  ISLAND_PROPS = []
 
   const ctx = new RenderContext(
     crypto.randomUUID(),
     opts.url,
     opts.route.pattern,
-    opts.lang ?? "en",
-  );
+    opts.lang ?? 'en',
+  )
 
-  let bodyHtml: string | null = null;
+  let bodyHtml: string | null = null
 
   function renderInner(vnode: ComponentChildren): string {
     const root = h(CSP_CONTEXT.Provider, {
@@ -201,73 +201,73 @@ export async function render<Data>(
           state: opts.state!,
           Component() {
             // deno-lint-ignore no-explicit-any
-            return vnode as any;
+            return vnode as any
           },
         }),
       }),
-    });
-    bodyHtml = renderToString(root);
-    return bodyHtml;
+    })
+    bodyHtml = renderToString(root)
+    return bodyHtml
   }
 
-  const renderResults: [Plugin, PluginRenderResult][] = [];
-  const syncPlugins = opts.plugins.filter((p) => p.render);
+  const renderResults: [Plugin, PluginRenderResult][] = []
+  const syncPlugins = opts.plugins.filter((p) => p.render)
   if (isAsyncComponent && syncPlugins.length > 0) {
     throw new Error(
       `Async server components cannot be rendered synchronously. The following plugins use a synchronous render method: "${
         syncPlugins.map((plugin) => plugin.name).join('", "')
       }"`,
-    );
+    )
   }
 
   function renderSync(): PluginRenderFunctionResult {
-    const plugin = syncPlugins.shift();
+    const plugin = syncPlugins.shift()
     if (plugin) {
-      const res = plugin.render!({ render: renderSync });
+      const res = plugin.render!({ render: renderSync })
       if (res === undefined) {
         throw new Error(
           `${plugin?.name}'s render hook did not return a PluginRenderResult object.`,
-        );
+        )
       }
-      renderResults.push([plugin, res]);
+      renderResults.push([plugin, res])
     } else {
-      renderInner(h(component as ComponentType, props));
+      renderInner(h(component as ComponentType, props))
     }
     if (bodyHtml === null) {
       throw new Error(
         `The 'render' function was not called by ${plugin?.name}'s render hook.`,
-      );
+      )
     }
     return {
       htmlText: bodyHtml,
       requiresHydration: ENCOUNTERED_ISLANDS.size > 0,
-    };
+    }
   }
 
-  const asyncPlugins = opts.plugins.filter((p) => p.renderAsync);
+  const asyncPlugins = opts.plugins.filter((p) => p.renderAsync)
 
-  let asyncRenderResponse: Response | undefined;
+  let asyncRenderResponse: Response | undefined
   async function renderAsync(): Promise<PluginRenderFunctionResult> {
-    const plugin = asyncPlugins.shift();
+    const plugin = asyncPlugins.shift()
     if (plugin) {
-      const res = await plugin.renderAsync!({ renderAsync });
+      const res = await plugin.renderAsync!({ renderAsync })
       if (res === undefined) {
         throw new Error(
           `${plugin?.name}'s async render hook did not return a PluginRenderResult object.`,
-        );
+        )
       }
-      renderResults.push([plugin, res]);
+      renderResults.push([plugin, res])
       if (bodyHtml === null) {
         throw new Error(
           `The 'renderAsync' function was not called by ${plugin?.name}'s async render hook.`,
-        );
+        )
       }
     } else {
       if (isAsyncComponent) {
         if (opts.renderFn !== DEFAULT_RENDER_FN) {
           throw new Error(
             `Async server components are not supported with custom render functions.`,
-          );
+          )
         }
 
         // deno-lint-ignore no-explicit-any
@@ -279,221 +279,220 @@ export async function render<Data>(
           route: opts.route.pattern,
           params: opts.params as Record<string, string>,
           state: opts.state ?? {},
-        });
+        })
         if (res instanceof Response) {
-          asyncRenderResponse = res;
-          bodyHtml = "";
+          asyncRenderResponse = res
+          bodyHtml = ''
         } else {
-          renderInner(res);
+          renderInner(res)
         }
       } else {
-        await opts.renderFn(ctx, () => renderSync().htmlText);
+        await opts.renderFn(ctx, () => renderSync().htmlText)
       }
 
       if (bodyHtml === null) {
         throw new Error(
           `The 'render' function was not called by the legacy async render hook.`,
-        );
+        )
       }
     }
     return {
       htmlText: bodyHtml,
       requiresHydration: ENCOUNTERED_ISLANDS.size > 0,
-    };
+    }
   }
 
-  await renderAsync();
+  await renderAsync()
   if (asyncRenderResponse !== undefined) {
-    return asyncRenderResponse;
+    return asyncRenderResponse
   }
 
-  bodyHtml = bodyHtml as unknown as string;
+  bodyHtml = bodyHtml as unknown as string
 
-  const moduleScripts: [string, string][] = [];
+  const moduleScripts: [string, string][] = []
 
   for (const url of opts.imports) {
-    const randomNonce = crypto.randomUUID().replace(/-/g, "");
+    const randomNonce = crypto.randomUUID().replace(/-/g, '')
     if (csp) {
       csp.directives.scriptSrc = [
         ...csp.directives.scriptSrc ?? [],
         nonce(randomNonce),
-      ];
+      ]
     }
-    moduleScripts.push([url, randomNonce]);
+    moduleScripts.push([url, randomNonce])
   }
 
-  const preloadSet = new Set<string>();
+  const preloadSet = new Set<string>()
   function addImport(path: string): string {
-    const randomNonce = crypto.randomUUID().replace(/-/g, "");
+    const randomNonce = crypto.randomUUID().replace(/-/g, '')
     if (csp) {
       csp.directives.scriptSrc = [
         ...csp.directives.scriptSrc ?? [],
         nonce(randomNonce),
-      ];
+      ]
     }
-    const url = bundleAssetUrl(`/${path}`);
-    preloadSet.add(url);
+    const url = bundleAssetUrl(`/${path}`)
+    preloadSet.add(url)
     for (const depPath of opts.dependenciesFn(path)) {
-      const url = bundleAssetUrl(`/${depPath}`);
-      preloadSet.add(url);
+      const url = bundleAssetUrl(`/${depPath}`)
+      preloadSet.add(url)
     }
-    return url;
+    return url
   }
 
-  const state: [islands: unknown[], plugins: unknown[]] = [ISLAND_PROPS, []];
-  const styleTags: PluginRenderStyleTag[] = [];
-  const pluginScripts: [string, string, number][] = [];
+  const state: [islands: unknown[], plugins: unknown[]] = [ISLAND_PROPS, []]
+  const styleTags: PluginRenderStyleTag[] = []
+  const pluginScripts: [string, string, number][] = []
 
   for (const [plugin, res] of renderResults) {
     for (const hydrate of res.scripts ?? []) {
-      const i = state[1].push(hydrate.state) - 1;
-      pluginScripts.push([plugin.name, hydrate.entrypoint, i]);
+      const i = state[1].push(hydrate.state) - 1
+      pluginScripts.push([plugin.name, hydrate.entrypoint, i])
     }
-    styleTags.splice(styleTags.length, 0, ...res.styles ?? []);
+    styleTags.splice(styleTags.length, 0, ...res.styles ?? [])
   }
 
   // The inline script that will hydrate the page.
-  let script = "";
+  let script = ''
 
   // Serialize the state into the <script id=__FRSH_STATE> tag and generate the
   // inline script to deserialize it. This script starts by deserializing the
   // state in the tag. This potentially requires importing @preact/signals.
   if (state[0].length > 0 || state[1].length > 0) {
-    const res = serialize(state);
-    const escapedState = htmlEscapeJsonString(res.serialized);
+    const res = serialize(state)
+    const escapedState = htmlEscapeJsonString(res.serialized)
     bodyHtml +=
-      `<script id="__FRSH_STATE" type="application/json">${escapedState}</script>`;
+      `<script id="__FRSH_STATE" type="application/json">${escapedState}</script>`
 
     if (res.requiresDeserializer) {
-      const url = addImport("deserializer.js");
-      script += `import { deserialize } from "${url}";`;
+      const url = addImport('deserializer.js')
+      script += `import { deserialize } from "${url}";`
     }
     if (res.hasSignals) {
-      const url = addImport("signals.js");
-      script += `import { signal } from "${url}";`;
+      const url = addImport('signals.js')
+      script += `import { signal } from "${url}";`
     }
-    script += `const ST = document.getElementById("__FRSH_STATE").textContent;`;
-    script += `const STATE = `;
+    script += `const ST = document.getElementById("__FRSH_STATE").textContent;`
+    script += `const STATE = `
     if (res.requiresDeserializer) {
       if (res.hasSignals) {
-        script += `deserialize(ST, signal);`;
+        script += `deserialize(ST, signal);`
       } else {
-        script += `deserialize(ST);`;
+        script += `deserialize(ST);`
       }
     } else {
-      script += `JSON.parse(ST).v;`;
+      script += `JSON.parse(ST).v;`
     }
   }
 
   // Then it imports all plugin scripts and executes them (with their respective
   // state).
   for (const [pluginName, entrypoint, i] of pluginScripts) {
-    const url = addImport(`plugin-${pluginName}-${entrypoint}.js`);
-    script += `import p${i} from "${url}";p${i}(STATE[1][${i}]);`;
+    const url = addImport(`plugin-${pluginName}-${entrypoint}.js`)
+    script += `import p${i} from "${url}";p${i}(STATE[1][${i}]);`
   }
 
   // Finally, it loads all island scripts and hydrates the islands using the
   // reviver from the "main" script.
   if (ENCOUNTERED_ISLANDS.size > 0) {
     // Load the main.js script
-    const url = addImport("main.js");
-    script += `import { revive } from "${url}";`;
+    const url = addImport('main.js')
+    script += `import { revive } from "${url}";`
 
     // Prepare the inline script that loads and revives the islands
-    let islandRegistry = "";
+    let islandRegistry = ''
     for (const island of ENCOUNTERED_ISLANDS) {
-      const url = addImport(`island-${island.id}.js`);
-      script +=
-        `import * as ${island.name}_${island.exportName} from "${url}";`;
-      islandRegistry += `${island.id}:${island.name}_${island.exportName},`;
+      const url = addImport(`island-${island.id}.js`)
+      script += `import * as ${island.name}_${island.exportName} from "${url}";`
+      islandRegistry += `${island.id}:${island.name}_${island.exportName},`
     }
-    script += `revive({${islandRegistry}}, STATE[0]);`;
+    script += `revive({${islandRegistry}}, STATE[0]);`
   }
 
   // Append the inline script.
-  if (script !== "") {
-    const randomNonce = crypto.randomUUID().replace(/-/g, "");
+  if (script !== '') {
+    const randomNonce = crypto.randomUUID().replace(/-/g, '')
     if (csp) {
       csp.directives.scriptSrc = [
         ...csp.directives.scriptSrc ?? [],
         nonce(randomNonce),
-      ];
+      ]
     }
     bodyHtml +=
-      `<script type="module" nonce="${randomNonce}">${script}</script>`;
+      `<script type="module" nonce="${randomNonce}">${script}</script>`
   }
 
   if (ctx.styles.length > 0) {
-    const node = h("style", {
-      id: "__FRSH_STYLE",
-      dangerouslySetInnerHTML: { __html: ctx.styles.join("\n") },
-    });
-    headComponents.splice(0, 0, node);
+    const node = h('style', {
+      id: '__FRSH_STYLE',
+      dangerouslySetInnerHTML: { __html: ctx.styles.join('\n') },
+    })
+    headComponents.splice(0, 0, node)
   }
 
   for (const style of styleTags) {
-    const node = h("style", {
+    const node = h('style', {
       id: style.id,
       dangerouslySetInnerHTML: { __html: style.cssText },
       media: style.media,
-    });
-    headComponents.splice(0, 0, node);
+    })
+    headComponents.splice(0, 0, node)
   }
 
-  const preloads = [...preloadSet];
+  const preloads = [...preloadSet]
   const html = template({
     bodyHtml,
     headComponents,
     moduleScripts,
     preloads,
     lang: ctx.lang,
-  });
+  })
 
-  return [html, csp];
+  return [html, csp]
 }
 
 export interface TemplateOptions {
-  bodyHtml: string;
-  headComponents: ComponentChildren[];
-  moduleScripts: (readonly [string, string])[];
-  preloads: string[];
-  lang: string;
+  bodyHtml: string
+  headComponents: ComponentChildren[]
+  moduleScripts: (readonly [string, string])[]
+  preloads: string[]
+  lang: string
 }
 
 export function template(opts: TemplateOptions): string {
   const page = h(
-    "html",
+    'html',
     { lang: opts.lang },
     h(
-      "head",
+      'head',
       null,
-      h("meta", { charSet: "UTF-8" }),
-      h("meta", {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1.0",
+      h('meta', { charSet: 'UTF-8' }),
+      h('meta', {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1.0',
       }),
       opts.preloads.map((src) =>
-        h("link", { rel: "modulepreload", href: src })
+        h('link', { rel: 'modulepreload', href: src })
       ),
       opts.moduleScripts.map(([src, nonce]) =>
-        h("script", { src: src, nonce: nonce, type: "module" })
+        h('script', { src: src, nonce: nonce, type: 'module' })
       ),
       opts.headComponents,
     ),
-    h("body", { dangerouslySetInnerHTML: { __html: opts.bodyHtml } }),
-  );
-  return "<!DOCTYPE html>" + renderToString(page);
+    h('body', { dangerouslySetInnerHTML: { __html: opts.bodyHtml } }),
+  )
+  return '<!DOCTYPE html>' + renderToString(page)
 }
 
 const supportsUnstableComments = renderToString(h(Fragment, {
   // @ts-ignore unstable features not supported in types
-  UNSTABLE_comment: "foo",
-})) !== "";
+  UNSTABLE_comment: 'foo',
+})) !== ''
 
 if (!supportsUnstableComments) {
   console.warn(
-    "⚠️  Found old version of 'preact-render-to-string'. Please upgrade it to >=6.1.0",
-  );
+    '⚠️  Found old version of \'preact-render-to-string\'. Please upgrade it to >=6.1.0',
+  )
 }
 
 function wrapWithMarker(vnode: ComponentChildren, markerText: string) {
@@ -509,54 +508,54 @@ function wrapWithMarker(vnode: ComponentChildren, markerText: string) {
       vnode,
       h(Fragment, {
         // @ts-ignore unstable property is not typed
-        UNSTABLE_comment: "/" + markerText,
+        UNSTABLE_comment: '/' + markerText,
       }),
-    );
+    )
   } else {
     return h(
       `!--${markerText}--`,
       null,
       vnode,
-    );
+    )
   }
 }
 
 // Set up a preact option hook to track when vnode with custom functions are
 // created.
-const ISLANDS: Island[] = [];
-const ENCOUNTERED_ISLANDS: Set<Island> = new Set([]);
-let ISLAND_PROPS: unknown[] = [];
+const ISLANDS: Island[] = []
+const ENCOUNTERED_ISLANDS: Set<Island> = new Set([])
+let ISLAND_PROPS: unknown[] = []
 
 // Keep track of which component rendered which vnode. This allows us
 // to detect when an island is rendered within another instead of being
 // passed as children.
-let ownerStack: VNode[] = [];
-const islandOwners = new Map<VNode, VNode>();
+let ownerStack: VNode[] = []
+const islandOwners = new Map<VNode, VNode>()
 
-const originalHook = options.vnode;
-let ignoreNext = false;
+const originalHook = options.vnode
+let ignoreNext = false
 options.vnode = (vnode) => {
-  assetHashingHook(vnode);
-  const originalType = vnode.type as ComponentType<unknown>;
+  assetHashingHook(vnode)
+  const originalType = vnode.type as ComponentType<unknown>
 
   // Use a labelled statement that allows ous to break out of it
   // whilst still continuing execution. We still want to call previous
   // `options.vnode` hooks if there were any, otherwise we'd break
   // the change for other plugins hooking into Preact.
   patchIslands:
-  if (typeof vnode.type === "function") {
-    const island = ISLANDS.find((island) => island.component === originalType);
+  if (typeof vnode.type === 'function') {
+    const island = ISLANDS.find((island) => island.component === originalType)
     if (island) {
-      const hasOwners = ownerStack.length > 0;
+      const hasOwners = ownerStack.length > 0
       if (hasOwners) {
-        const prevOwner = ownerStack[ownerStack.length - 1];
-        islandOwners.set(vnode, prevOwner);
+        const prevOwner = ownerStack[ownerStack.length - 1]
+        islandOwners.set(vnode, prevOwner)
       }
 
       // Check if we already patched this component
       if (ignoreNext) {
-        ignoreNext = false;
-        break patchIslands;
+        ignoreNext = false
+        break patchIslands
       }
 
       // Check if an island is rendered inside another island, not just
@@ -565,62 +564,62 @@ options.vnode = (vnode) => {
       //     return <OtherIsland />
       //   }
       if (hasOwners) {
-        const prevOwner = ownerStack[ownerStack.length - 1];
+        const prevOwner = ownerStack[ownerStack.length - 1]
         if (islandOwners.has(prevOwner)) {
-          break patchIslands;
+          break patchIslands
         }
       }
 
-      ENCOUNTERED_ISLANDS.add(island);
+      ENCOUNTERED_ISLANDS.add(island)
       vnode.type = (props) => {
-        ignoreNext = true;
+        ignoreNext = true
 
         // Only passing children JSX to islands is supported for now
-        if ("children" in props) {
-          const children = props.children;
+        if ('children' in props) {
+          const children = props.children
           // @ts-ignore nonono
           props.children = wrapWithMarker(
             children,
             `frsh-slot-${island.id}:children`,
-          );
+          )
         }
 
-        const child = h(originalType, props);
-        ISLAND_PROPS.push(props);
+        const child = h(originalType, props)
+        ISLAND_PROPS.push(props)
 
         return wrapWithMarker(
           child,
           `frsh-${island.id}:${island.exportName}:${ISLAND_PROPS.length - 1}`,
-        );
-      };
+        )
+      }
     }
   }
-  if (originalHook) originalHook(vnode);
-};
+  if (originalHook) originalHook(vnode)
+}
 
 // Keep track of owners
-const oldDiffed = options.diffed;
-const oldRender = options.__r;
-const oldCommit = options.__c;
+const oldDiffed = options.diffed
+const oldRender = options.__r
+const oldCommit = options.__c
 options.__r = (vnode) => {
   if (
-    typeof vnode.type === "function" &&
+    typeof vnode.type === 'function' &&
     vnode.type !== Fragment
   ) {
-    ownerStack.push(vnode);
+    ownerStack.push(vnode)
   }
-  oldRender?.(vnode);
-};
+  oldRender?.(vnode)
+}
 options.diffed = (vnode) => {
-  if (typeof vnode.type === "function") {
+  if (typeof vnode.type === 'function') {
     if (vnode.type !== Fragment) {
-      ownerStack.pop();
+      ownerStack.pop()
     }
   }
-  oldDiffed?.(vnode);
-};
+  oldDiffed?.(vnode)
+}
 options.__c = (vnode, queue) => {
-  oldCommit?.(vnode, queue);
-  ownerStack = [];
-  islandOwners.clear();
-};
+  oldCommit?.(vnode, queue)
+  ownerStack = []
+  islandOwners.clear()
+}

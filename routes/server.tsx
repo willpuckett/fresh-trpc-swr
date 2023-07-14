@@ -21,7 +21,7 @@ export default function Page({ data: { posts } }: PageProps<{
   return (
     <div>
       <form>
-        <label for='post'>Post Title : </label>
+        <label for='post'>Post Title :</label>
         <input class='border-1' type='text' name='post' />
         <button class='border-1' type='submit'>Create Post</button>
       </form>

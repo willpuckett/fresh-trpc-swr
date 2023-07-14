@@ -1,14 +1,14 @@
-import { template } from "./render.ts";
-import { assertStringIncludes } from "../../tests/deps.ts";
+import { template } from './render.ts'
+import { assertStringIncludes } from '../../tests/deps.ts'
 
-Deno.test("check lang", () => {
-  const lang = "fr";
+Deno.test('check lang', () => {
+  const lang = 'fr'
   const body = template({
-    bodyHtml: "",
+    bodyHtml: '',
     headComponents: [],
     moduleScripts: [],
     preloads: [],
     lang,
-  });
-  assertStringIncludes(body, `<html lang="${lang}">`);
-});
+  })
+  assertStringIncludes(body, `<html lang="${lang}">`)
+})

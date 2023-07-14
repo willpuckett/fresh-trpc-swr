@@ -1,1 +1,1 @@
-export { deserialize } from "../deserializer.ts";
+export { deserialize } from '../deserializer.ts'
