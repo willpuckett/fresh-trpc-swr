@@ -23,7 +23,8 @@
     "$fresh/": "https://deno.land/x/fresh@1.2.0/",
     "https://deno.land/x/fresh@1.2.0/src/server/deps.ts": "./mod/fresh_src_server_deps.js",
     "twind": "./mod/twind.js",
-    "twind/": "https://esm.sh/twind@0.16.19/",
+    "twind/sheets": "./mod/twind_sheets.js",
+    "https://deno.land/x/esbuild_deno_loader@0.8.1/mod.ts": "./mod/esbuild_deno_loader.js",
     // TRPC Stuff 
     "@trpc/client": "./mod/trpc_client.js",
     "@trpc/server": "./mod/trpc_server.js",
