@@ -15,13 +15,13 @@ export default function clientSide() {
       />
       <button
         class='border-1'
-        onClick={ () => {
-           createPost({ title: text.value }, { onSuccess: () => 
-        {    
-          mutate() 
-          text.value = ''
-        }
-           })
+        onClick={() => {
+          createPost({ title: text.value }, {
+            onSuccess: () => {
+              mutate()
+              text.value = ''
+            },
+          })
         }}
       >
         Create Post
@@ -34,7 +34,8 @@ export default function clientSide() {
             <li key={post.id}>
               {post.value.title}{' '}
               <button
-                onClick={ () => deletePost(post.id as string, {onSuccess: () => mutate()})}
+                onClick={() =>
+                  deletePost(post.id as string, { onSuccess: () => mutate() })}
               >
                 ⌫
               </button>

@@ -5,8 +5,7 @@
     "pack": "deno fmt && deno lint && deno task start",
     "esm:add": "deno run -A https://esm.sh/ add",
     "esm:update": "deno run -A https://esm.sh/ update",
-    "esm:remove": "deno run -A https://esm.sh/ remove",
-
+    "esm:remove": "deno run -A https://esm.sh/ remove"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
@@ -17,45 +16,36 @@
     "singleQuote": true
   },
   "imports": {
-    // The * marks all deps as external in an esm import. 
+    // The * marks all deps as external in an esm import.
     // None of the below have external deps.
     // Fresh Stuff
     "$fresh/": "https://deno.land/x/fresh@1.2.0/",
-    "https://deno.land/x/fresh@1.2.0/src/server/deps.ts": "./mod/fresh_src_server_deps.js",
-    "twind": "./mod/twind.js",
-    "twind/sheets": "./mod/twind_sheets.js",
-    "https://deno.land/x/esbuild_deno_loader@0.8.1/mod.ts": "./mod/esbuild_deno_loader.js",
-    "https://deno.land/x/fresh@1.2.0/src/build/mod.ts": "./mod/fresh_src_build_mod.js",
-    // TRPC Stuff 
-    "@trpc/client": "./mod/trpc_client.js",
-    "@trpc/server": "./mod/trpc_server.js",
-    "@trpc/server/adapters/fetch": "./mod/trpc_server_adapters_fetch.js",
-    "@trpc/server/shared": "./mod/trpc_server_shared.js",
+    "twind": "https://esm.sh/twind@0.16.19",
+    "twind/": "https://esm.sh/twind@0.16.19/",
+    // TRPC Stuff
+    "@trpc/client": "https://esm.sh/@trpc/client@10.34.0",
+    "@trpc/server": "https://esm.sh/@trpc/server@10.34.0",
+    "@trpc/server/": "https://esm.sh/@trpc/server@10.34.0/",
     "kvdex": "https://deno.land/x/kvdex@v0.3.2/mod.ts",
-    "kv_oauth": "./mod/kv_oauth.js",
-    "zod": "./mod/zod.js",
+    "kv_oauth": "https://deno.land/x/deno_kv_oauth@v0.2.4/mod.ts",
+    "zod": "https://esm.sh/zod@3.21.4",
     // Preact Stuff
     // Make sure these versions are the same -->
-    "preact": "https://esm.sh/preact@10.15.1?deps=preact@10.15.1&external=preact",
-    "preact/hooks": "./mod/preact_hooks.js",
-    "preact/debug": "./mod/preact_debug.js",
-    "preact/jsx-runtime": "./mod/preact_jsx_runtime.js",
-    "preact/compat": "./mod/preact_compat.js",
-    "preact/devtools": "./mod/preact_devtools.js",
-    "react": "./mod/react.js",
-    "react/jsx-runtime": "./mod/react_jsx_runtime.js",
+    "preact": "https://esm.sh/preact@10.15.1",
+    "preact/": "https://esm.sh/preact@10.15.1/",
+    "react": "https://esm.sh/preact@10.15.1/compat",
+    "react/": "https://esm.sh/preact@10.15.1/compat/",
     // <--
-    // "@preact/signals-core": "https://bundle.deno.dev/https://esm.sh/@preact/signals-core@1.2.3?deps=preact@10.15.1&external=preact",
+    "@preact/signals-core": "https://esm.sh/@preact/signals-core@1.2.3",
     // This is where the external deps start. Everything below this line has external deps.
     // ^-- no deps (no * necessary for esm imports) / deps --v
-    "@preact/signals": "https://esm.sh/@preact/signals@1.1.3?deps=preact@10.15.1&external=preact",
-    "preact-render-to-string": "https://esm.sh/preact-render-to-string@6.2.0?deps=preact@10.15.1&external=preact",
-    "use-sync-external-store": "https://bundle.deno.dev/https://esm.sh/*use-sync-external-store@1.2.0",
+    "@preact/signals": "https://esm.sh/*@preact/signals@1.1.3",
+    "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.2.0",
+    "use-sync-external-store": "https://esm.sh/*use-sync-external-store@1.2.0",
     "use-sync-external-store/": "https://esm.sh/*use-sync-external-store@1.2.0/",
     // Frontend Stuff
     "swr": "https://esm.sh/*swr@2.2.0",
-    "swr/mutation": "https://esm.sh/*swr@2.2.0/mutation",
-    "swr/_internal": "https://esm.sh/*swr@2.2.0/_internal",
+    "swr/": "https://esm.sh/*swr@2.2.0/",
     "@trpc-swr/client": "https://esm.sh/*@trpc-swr/client@1.0.2"
   },
   "scopes": {}
