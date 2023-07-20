@@ -7,11 +7,13 @@ import * as $1 from './routes/api/[trpc].ts'
 import * as $2 from './routes/api/oauth.ts'
 import * as $3 from './routes/api/signin.ts'
 import * as $4 from './routes/api/signout.ts'
-import * as $5 from './routes/index.tsx'
-import * as $6 from './routes/server.tsx'
-import * as $7 from './routes/swr.tsx'
+import * as $5 from './routes/ignal.tsx'
+import * as $6 from './routes/index.tsx'
+import * as $7 from './routes/server.tsx'
+import * as $8 from './routes/swr.tsx'
 import * as $$0 from './islands/Provider.tsx'
-import * as $$1 from './islands/swr.tsx'
+import * as $$1 from './islands/ignal.tsx'
+import * as $$2 from './islands/swr.tsx'
 
 const manifest = {
   routes: {
@@ -20,13 +22,15 @@ const manifest = {
     './routes/api/oauth.ts': $2,
     './routes/api/signin.ts': $3,
     './routes/api/signout.ts': $4,
-    './routes/index.tsx': $5,
-    './routes/server.tsx': $6,
-    './routes/swr.tsx': $7,
+    './routes/ignal.tsx': $5,
+    './routes/index.tsx': $6,
+    './routes/server.tsx': $7,
+    './routes/swr.tsx': $8,
   },
   islands: {
     './islands/Provider.tsx': $$0,
-    './islands/swr.tsx': $$1,
+    './islands/ignal.tsx': $$1,
+    './islands/swr.tsx': $$2,
   },
   baseUrl: import.meta.url,
 }

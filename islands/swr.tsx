@@ -3,10 +3,14 @@ import { trpc } from '../trpc/swr.ts'
 import { inferRouterOutputs } from '@trpc/server'
 import { appRouter } from '../trpc/router.ts'
 
-export default function clientSide({data}:{data?: inferRouterOutputs<typeof appRouter>['post']['list']}) {
+export default function clientSide(
+  { data }: { data?: inferRouterOutputs<typeof appRouter>['post']['list'] },
+) {
   const text = useSignal('')
 
-  const { data:posts, error, mutate } = trpc.post.list.useSWR(undefined,{fallbackData: data})
+  const { data: posts, error, mutate } = trpc.post.list.useSWR(undefined, {
+    fallbackData: data,
+  })
   const createPost = trpc.post.create.useSWRMutation().trigger
   const deletePost = trpc.post.delete.useSWRMutation().trigger
   return (

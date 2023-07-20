@@ -8,6 +8,7 @@ export default function Header({ active }: {
     { name: '🏠', href: '/' },
     { name: 'Server', href: '/server' },
     { name: 'swr', href: '/swr' },
+    { name: 'ignal', href: '/ignal' },
     { name: 'Signin', href: '/api/signin' },
     { name: 'Signout', href: '/api/signout' },
   ]

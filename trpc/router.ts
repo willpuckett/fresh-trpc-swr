@@ -83,16 +83,16 @@ const loggedProcedure = publicProcedure.use(loggerMiddleware)
 const postRouter = router({
   create: loggedProcedure
     .input(Post)
-    .mutation(async ({ input }) => {
-      const post = await db.posts.add(input)
+    .mutation(({ input }) => {
+      const post = db.posts.add(input)
       return post
     }),
   list: loggedProcedure.query(async () => {
-    return await db.posts.getMany()
+    return (await db.posts.getMany()).result
   }),
 
-  delete: loggedProcedure.input(z.string()).mutation(async ({ input }) => {
-    await db.posts.delete(input)
+  delete: loggedProcedure.input(z.string()).mutation(({ input }) => {
+    db.posts.delete(input)
   }),
   // setToken: loggedProcedure
   //   .mutation(({ ctx }) => {

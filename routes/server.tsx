@@ -14,7 +14,6 @@ export async function handler(req: Request, ctx: HandlerContext) {
   const posts = await caller.post.list()
   return ctx.render({ posts })
 }
-
 export default function Page({ data: { posts } }: PageProps<{
   posts: RouterOutput['post']['list']
 }>) {

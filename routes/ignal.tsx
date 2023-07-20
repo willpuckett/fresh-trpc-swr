@@ -1,4 +1,4 @@
-import SWR from '../islands/swr.tsx'
+import Ignal from '../islands/ignal.tsx'
 import type { Handlers, PageProps } from '$fresh/server.ts'
 import { caller } from '../trpc/caller.ts'
 
@@ -8,4 +8,4 @@ export const handler: Handlers = {
   },
 }
 
-export default ({ data }) => <SWR data={data} />
+export default ({ data }) => <Ignal data={data} />
