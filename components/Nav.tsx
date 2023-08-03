@@ -42,16 +42,21 @@ export const Nav = ({ active }: {
 //   children: ComponentChildren;
 // };
 
-export function Footer() {
+export function Footer({ isSignedIn, accessToken}:{isSignedIn: boolean, accessToken: string | null}) {
   const menus = [
     {
       title: 'OAuth Info',
       children: [
-        { name: 'Getting Started', href: '#' },
-        { name: 'Guide', href: '#' },
-        { name: 'API', href: '#' },
-        { name: 'Showcase', href: '#' },
-        { name: 'Pricing', href: '#' },
+        { name: 'Provider: Github', href: '#' },
+        { name: `Signed in ${ isSignedIn? '✅': '❌' }`, href: '#' },
+        {
+          name: `Access 💰 ${accessToken !== null
+          ? (
+            <span style='filter:blur(3px)'>
+              {accessToken + ' (intentionally blurred for security)'}
+            </span>
+          )
+          : '❌'}`, href: '#' },
       ],
     },
   ]

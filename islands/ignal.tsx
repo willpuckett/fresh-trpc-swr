@@ -5,7 +5,6 @@ export default function clientSide(
   { posts }: { posts: Signal<RouterOutput['post']['list']> },
 ) {
   const text = useSignal('')
-  // console.log('posts', posts.value)
   return (
     <div>
       <label for='post'>Post Title :</label>

@@ -5,6 +5,5 @@ import { signal } from '@preact/signals'
 export default async () => {
   const posts = signal<RouterOutput['post']['list']>([])
   posts.value = await caller.post.list()
-  console.log('handler posts', posts.value)
   return <Ignal posts={posts} />
 }

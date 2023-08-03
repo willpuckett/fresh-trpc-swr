@@ -2,7 +2,6 @@ import { Footer, Nav } from '@/components/Nav.tsx'
 import { Head } from '$fresh/runtime.ts'
 
 export default ({ Component, url, state }: AppProps) => {
-  console.log('state', state)
   return (
     <>
       <Head>
@@ -24,7 +23,7 @@ export default ({ Component, url, state }: AppProps) => {
           <Component />
         </div>
         {/* </Provider> */}
-        <Footer />
+        <Footer accessToken={state.accessToken} isSignedIn={state.isSignedIn} />
       </div>
     </>
   )

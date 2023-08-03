@@ -1,9 +1,4 @@
-import { RouteContext } from '$fresh/server.ts'
-
-const HomePage = (_req: Request, ctx: RouteContext) => {
-  // const { isSignedIn, accessToken } = ctx.state
-  console.log(ctx)  
-  return (
+export default () =>  (
     <>
       <br />
       <p>This is a sample of using tRPC with Fresh</p>
@@ -15,20 +10,5 @@ const HomePage = (_req: Request, ctx: RouteContext) => {
           <a class='text-blue-500' href='/swr'>swr</a>
         </li>
       </ul>
-      <br />
-      <p>Provider: GitHub</p>
-      {/* <p>Signed in: {isSignedIn ? '✅' : '❌'}</p>
-      <p>
-        Your access token: {accessToken !== null
-          ? (
-            <span style='filter:blur(3px)'>
-              {accessToken + ' (intentionally blurred for security)'}
-            </span>
-          )
-          : '❌'}
-      </p> */}
     </>
   )
-}
-
-export default HomePage
