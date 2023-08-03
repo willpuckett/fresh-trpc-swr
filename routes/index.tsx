@@ -1,7 +1,8 @@
 import { RouteContext } from '$fresh/server.ts'
 
-const HomePage = (_req: Request, { state }: RouteContext<never, State>) => {
-  const { isSignedIn, accessToken } = state
+const HomePage = (_req: Request, ctx: RouteContext<never, State>) => {
+  // const { isSignedIn, accessToken } = ctx.state
+  console.log(ctx.state)  
   return (
     <>
       <br />
@@ -16,7 +17,7 @@ const HomePage = (_req: Request, { state }: RouteContext<never, State>) => {
       </ul>
       <br />
       <p>Provider: GitHub</p>
-      <p>Signed in: {isSignedIn ? '✅' : '❌'}</p>
+      {/* <p>Signed in: {isSignedIn ? '✅' : '❌'}</p>
       <p>
         Your access token: {accessToken !== null
           ? (
@@ -25,7 +26,7 @@ const HomePage = (_req: Request, { state }: RouteContext<never, State>) => {
             </span>
           )
           : '❌'}
-      </p>
+      </p> */}
     </>
   )
 }
