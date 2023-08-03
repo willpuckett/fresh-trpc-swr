@@ -1,6 +1,7 @@
 import { caller } from '@/trpc/caller.ts'
 
-const Page: AsyncRoute = async (req) => {
+const Page: AsyncRoute = async (req, ctx) => {
+  console.log('ctx', ctx)
   const { searchParams } = new URL(req.url)
   const post = searchParams.get('post')
   if (post) await caller.post.create({ title: post })

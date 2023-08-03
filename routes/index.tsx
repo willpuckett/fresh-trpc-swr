@@ -1,8 +1,8 @@
 import { RouteContext } from '$fresh/server.ts'
 
-const HomePage = (_req: Request, ctx: RouteContext<never, State>) => {
+const HomePage = (_req: Request, ctx: RouteContext) => {
   // const { isSignedIn, accessToken } = ctx.state
-  console.log(ctx.state)  
+  console.log(ctx)  
   return (
     <>
       <br />
