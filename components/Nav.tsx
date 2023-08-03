@@ -50,13 +50,7 @@ export function Footer({ isSignedIn, accessToken}:{isSignedIn: boolean, accessTo
         { name: 'Provider: Github', href: '#' },
         { name: `Signed in ${ isSignedIn? '✅': '❌' }`, href: '#' },
         {
-          name: `Access 💰 ${accessToken !== null
-          ? (
-            <span style='filter:blur(3px)'>
-              {accessToken + ' (intentionally blurred for security)'}
-            </span>
-          )
-          : '❌'}`, href: '#' },
+          name: `Access 💰 ${accessToken !== null ? '✅' : '❌'}`, href: '#' },
       ],
     },
   ]
