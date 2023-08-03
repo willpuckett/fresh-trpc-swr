@@ -1,11 +1,10 @@
-import Ignal from '../islands/ignal.tsx'
-import type { Handlers, PageProps } from '$fresh/server.ts'
-import { caller } from '../trpc/caller.ts'
+import Ignal from '@/islands/ignal.tsx'
+import { caller } from '@/trpc/caller.ts'
+import { signal } from '@preact/signals'
 
-export const handler: Handlers = {
-  async GET(req, ctx) {
-    return ctx.render(await caller.post.list())
-  },
+export default async () => {
+  const posts = signal<RouterOutput['post']['list']>([])
+  posts.value = await caller.post.list()
+  console.log('handler posts', posts.value)
+  return <Ignal posts={posts} />
 }
-
-export default ({ data }) => <Ignal data={data} />

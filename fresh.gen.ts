@@ -3,14 +3,15 @@
 // This file is automatically updated during development when running `dev.ts`.
 
 import * as $0 from './routes/_app.tsx'
-import * as $1 from './routes/api/[trpc].ts'
-import * as $2 from './routes/api/oauth.ts'
-import * as $3 from './routes/api/signin.ts'
-import * as $4 from './routes/api/signout.ts'
-import * as $5 from './routes/ignal.tsx'
-import * as $6 from './routes/index.tsx'
-import * as $7 from './routes/server.tsx'
-import * as $8 from './routes/swr.tsx'
+import * as $1 from './routes/_middleware.ts'
+import * as $2 from './routes/api/[trpc].ts'
+import * as $3 from './routes/api/oauth.ts'
+import * as $4 from './routes/api/signin.ts'
+import * as $5 from './routes/api/signout.ts'
+import * as $6 from './routes/ignal.tsx'
+import * as $7 from './routes/index.tsx'
+import * as $8 from './routes/server.tsx'
+import * as $9 from './routes/swr.tsx'
 import * as $$0 from './islands/Provider.tsx'
 import * as $$1 from './islands/ignal.tsx'
 import * as $$2 from './islands/swr.tsx'
@@ -18,14 +19,15 @@ import * as $$2 from './islands/swr.tsx'
 const manifest = {
   routes: {
     './routes/_app.tsx': $0,
-    './routes/api/[trpc].ts': $1,
-    './routes/api/oauth.ts': $2,
-    './routes/api/signin.ts': $3,
-    './routes/api/signout.ts': $4,
-    './routes/ignal.tsx': $5,
-    './routes/index.tsx': $6,
-    './routes/server.tsx': $7,
-    './routes/swr.tsx': $8,
+    './routes/_middleware.ts': $1,
+    './routes/api/[trpc].ts': $2,
+    './routes/api/oauth.ts': $3,
+    './routes/api/signin.ts': $4,
+    './routes/api/signout.ts': $5,
+    './routes/ignal.tsx': $6,
+    './routes/index.tsx': $7,
+    './routes/server.tsx': $8,
+    './routes/swr.tsx': $9,
   },
   islands: {
     './islands/Provider.tsx': $$0,

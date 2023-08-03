@@ -1,26 +1,7 @@
-import type { Handlers, PageProps } from '$fresh/server.ts'
-import { getSessionAccessToken, getSessionId } from 'kv_oauth'
-import { oauth2Client } from '../trpc/auth.ts'
+import { RouteContext } from '$fresh/server.ts'
 
-interface Data {
-  isSignedIn: boolean
-  accessToken: null | string
-}
-
-export const handler: Handlers<Data> = {
-  async GET(req, ctx) {
-    const sessionId = await getSessionId(req)
-    const isSignedIn = sessionId !== null
-    const accessToken = isSignedIn
-      ? await getSessionAccessToken(oauth2Client, sessionId)
-      : null
-
-    return ctx.render({ isSignedIn, accessToken })
-  },
-}
-
-export default function HomePage(props: PageProps<Data>) {
-  const { isSignedIn, accessToken } = props.data
+const HomePage = (_req: Request, { state }: RouteContext<never, State>) => {
+  const { isSignedIn, accessToken } = state
   return (
     <>
       <br />
@@ -39,7 +20,7 @@ export default function HomePage(props: PageProps<Data>) {
       <p>
         Your access token: {accessToken !== null
           ? (
-            <span style='filter:blur(0px)'>
+            <span style='filter:blur(3px)'>
               {accessToken + ' (intentionally blurred for security)'}
             </span>
           )
@@ -48,3 +29,5 @@ export default function HomePage(props: PageProps<Data>) {
     </>
   )
 }
+
+export default HomePage

@@ -1,9 +1,9 @@
 import BrandGithub from 'https://deno.land/x/tabler_icons_tsx@0.0.3/tsx/brand-github.tsx'
 import LemonIcon from 'https://deno.land/x/tabler_icons_tsx@0.0.3/tsx/lemon-2.tsx'
 
-export default function Header({ active }: {
+export const Nav = ({ active }: {
   active: string
-}) {
+}) => {
   const menus = [
     { name: '🏠', href: '/' },
     { name: 'Server', href: '/server' },

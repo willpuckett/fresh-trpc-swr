@@ -1,15 +1,11 @@
-import { useSignal } from '@preact/signals'
-import { trpc } from '../trpc/proxy.ts'
-import { inferRouterOutputs } from '@trpc/server'
-import { appRouter } from '../trpc/router.ts'
-
-const posts = await trpc.post.list.query()
+import { Signal, useSignal } from '@preact/signals'
+import { trpc } from '@/trpc/proxy.ts'
 
 export default function clientSide(
-  { data }: { data?: inferRouterOutputs<typeof appRouter>['post']['list'] },
+  { posts }: { posts: Signal<RouterOutput['post']['list']> },
 ) {
   const text = useSignal('')
-
+  // console.log('posts', posts.value)
   return (
     <div>
       <label for='post'>Post Title :</label>
@@ -21,18 +17,21 @@ export default function clientSide(
       />
       <button
         class='border-1'
-        onClick={() => {
-          trpc.post.create.mutate({ title: text.value })
+        type='submit'
+        onClick={async (e) => {
+          await trpc.post.create.mutate({ title: text.value })
+          posts.value = await trpc.post.list.query()
+          text.value = ''
         }}
       >
         Create Post
       </button>
       <ul>
-        {!posts ? <div>loading...</div> : posts.map((post) => (
+        {posts.value.map((post) => (
           <li key={post.id}>
-            {post.value.title}{' '}
+            {post.title}{' '}
             <button
-              onClick={() => trpc.post.delete.mutate(post.id as string)}
+              onClick={() => trpc.post.delete.mutate(post.id)}
             >
               ⌫
             </button>

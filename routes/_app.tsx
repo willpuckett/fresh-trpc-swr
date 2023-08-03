@@ -1,9 +1,7 @@
-import Nav, { Footer } from '../components/Nav.tsx'
-import { AppProps } from '$fresh/server.ts'
-import Provider from '../islands/Provider.tsx'
+import { Footer, Nav } from '@/components/Nav.tsx'
 import { Head } from '$fresh/runtime.ts'
 
-export default ({ Component, url }: AppProps) => {
+export default ({ Component, url, state }: AppProps) => {
   return (
     <>
       <Head>
@@ -20,11 +18,11 @@ export default ({ Component, url }: AppProps) => {
           /* use Provider island here to have trpc swr hooks available throughout the app,
         or omit here and wrap islands by route */
         }
-        <Provider>
-          <div class='p-4 md:p-6 mt-4'>
-            <Component />
-          </div>
-        </Provider>
+        {/* <Provider> */}
+        <div class='p-4 md:p-6 mt-4'>
+          <Component />
+        </div>
+        {/* </Provider> */}
         <Footer />
       </div>
     </>

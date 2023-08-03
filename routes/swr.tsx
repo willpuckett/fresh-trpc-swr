@@ -1,11 +1,12 @@
-import SWR from '../islands/swr.tsx'
-import type { Handlers, PageProps } from '$fresh/server.ts'
-import { caller } from '../trpc/caller.ts'
+import SWR from '@/islands/swr.tsx'
+import { caller } from '@/trpc/caller.ts'
+import Provider from '@/islands/Provider.tsx'
 
-export const handler: Handlers = {
-  async GET(req, ctx) {
-    return ctx.render(await caller.post.list())
-  },
+export default async () => {
+  const data = await caller.post.list()
+  return (
+    <Provider>
+      <SWR data={data} />
+    </Provider>
+  )
 }
-
-export default ({ data }) => <SWR data={data} />

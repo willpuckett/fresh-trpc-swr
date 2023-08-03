@@ -3,6 +3,7 @@ import { trpc } from '../trpc/swr.ts'
 import { inferRouterOutputs } from '@trpc/server'
 import { appRouter } from '../trpc/router.ts'
 
+// console.log('trpc test', await trpc.post.list.useSWR())
 export default function clientSide(
   { data }: { data?: inferRouterOutputs<typeof appRouter>['post']['list'] },
 ) {
@@ -41,7 +42,7 @@ export default function clientSide(
           ? <div>loading...</div>
           : posts.map((post) => (
             <li key={post.id}>
-              {post.value.title}{' '}
+              {post.title}{' '}
               <button
                 onClick={() =>
                   deletePost(post.id as string, { onSuccess: () => mutate() })}
